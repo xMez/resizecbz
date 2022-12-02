@@ -7,10 +7,11 @@ import io
 import glob
 import configparser
 import zipfile
+from typing import List, Tuple
 from PIL import Image
 
 
-def appendToErrorLog(text):
+def appendToErrorLog(text: str) -> None:
     """Append text to error log text file"""
     # https://stackoverflow.com/questions/230751/how-can-i-flush-the-output-of-the-print-function-unbuffer-python-output
     print(text, flush=True)
@@ -27,7 +28,7 @@ def appendToErrorLog(text):
         output.write('\n')
 
 
-def resize(inputZip, outputZip, resizeLandscape, resizePortrait):
+def resize(inputZip: zipfile.ZipFile, outputZip: zipfile.ZipFile, resizeLandscape: Tuple[int, int], resizePortrait: Tuple[int, int]):
     """Resize images inside inputZip and save the new images into outputZip"""
     infoList = inputZip.infolist()
     i = 1
@@ -66,7 +67,7 @@ def resize(inputZip, outputZip, resizeLandscape, resizePortrait):
             # img.show()
 
 
-def resizeZippedImages(inputPath, outputPath, configParameters):
+def resizeZippedImages(inputPath: str, outputPath: str, configParameters: configparser.SectionProxy):
     """Resize images in file inputPath and save the new images in outputPath"""
     print(f"Resizing: {inputPath} -> {outputPath}")
     value = int(configParameters['resize_landscape'])
@@ -99,7 +100,7 @@ def resizeZippedImages(inputPath, outputPath, configParameters):
         raise
 
 
-def resizeCbz(path, configParameters):
+def resizeCbz(path: str, configParameters: configparser.SectionProxy):
     """resize the CBZ path with configuration specified in configParameters"""
     if not os.path.isfile(path):
         raise ValueError(f"{path} is not a file")
@@ -135,7 +136,7 @@ def resizeCbz(path, configParameters):
         resizeZippedImages(path, outputPath, configParameters)
 
 
-def readConfigurationFile(arg0):
+def readConfigurationFile(arg0: str) -> configparser.SectionProxy:
     """Read configuration file from a series of possible directories"""
     cmdDirectory, _ = os.path.split(arg0)
     home = os.path.expanduser("~")
@@ -212,7 +213,7 @@ def readConfigurationFile(arg0):
 
 if __name__ == '__main__':
 
-    def main(argv):
+    def main(argv: List[str]):
         """main(arg)"""
         # Turn off "DecompressionBombWarning:
         # Image size (xxxxpixels) exceeds limit..."
